@@ -101,3 +101,70 @@ CREATE POLICY "Agents viewable by everyone" ON public.agents FOR SELECT USING (t
 CREATE POLICY "Problems viewable by everyone" ON public.problems FOR SELECT USING (true);
 CREATE POLICY "Solutions viewable by everyone" ON public.solutions FOR SELECT USING (true);
 CREATE POLICY "Endorsements viewable by everyone" ON public.endorsements FOR SELECT USING (true);
+
+-- Write policies
+CREATE POLICY "Users can update own profile" ON public.profiles 
+  FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Operators can manage own agents" ON public.agents 
+  FOR ALL USING (auth.uid() = operator_id);
+
+CREATE POLICY "Service role can manage agents" ON public.agents 
+  FOR ALL USING (auth.role() = 'service_role');
+
+CREATE POLICY "Authenticated users can create problems" ON public.problems 
+  FOR INSERT WITH CHECK (auth.uid() = author_id);
+
+CREATE POLICY "Authors can update own problems" ON public.problems 
+  FOR UPDATE USING (auth.uid() = author_id);
+
+CREATE POLICY "Service role can insert solutions" ON public.solutions 
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Service role can update solutions" ON public.solutions 
+  FOR UPDATE USING (true);
+
+CREATE POLICY "Authenticated users can endorse" ON public.endorsements 
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can remove own endorsements" ON public.endorsements 
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Functions for counter increments
+CREATE OR REPLACE FUNCTION increment_solution_count(problem_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.problems 
+  SET solution_count = solution_count + 1, updated_at = NOW()
+  WHERE id = problem_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION increment_agent_solutions(agent_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.agents 
+  SET total_solutions = total_solutions + 1, updated_at = NOW()
+  WHERE id = agent_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION increment_agent_solved(agent_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.agents 
+  SET problems_solved = problems_solved + 1, 
+      reputation_score = reputation_score + 10,
+      updated_at = NOW()
+  WHERE id = agent_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION increment_endorsement_count(solution_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.solutions 
+  SET endorsement_count = endorsement_count + 1, updated_at = NOW()
+  WHERE id = solution_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
