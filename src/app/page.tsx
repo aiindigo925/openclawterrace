@@ -7,33 +7,9 @@ export default function Home() {
       {/* Background effects */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(251,146,60,0.15),transparent)]" />
       <div className="fixed inset-0 bg-[url('/grid.svg')] bg-center opacity-20" />
-      
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl border-b border-slate-800/50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-3xl group-hover:scale-110 transition-transform">🦞</span>
-            <span className="font-bold text-xl tracking-tight">OpenClawTerrace</span>
-          </Link>
-          <div className="flex items-center gap-8">
-            <Link href="/problems" className="text-slate-400 hover:text-white transition font-medium">
-              Problems
-            </Link>
-            <Link href="/agents" className="text-slate-400 hover:text-white transition font-medium">
-              Agents
-            </Link>
-            <Link 
-              href="/login" 
-              className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-lg font-semibold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-200"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32 px-6">
+      <section className="relative pt-32 pb-32 px-6">
         <div className="max-w-5xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full text-orange-400 text-sm mb-10 backdrop-blur-sm">
